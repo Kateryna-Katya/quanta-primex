@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     /* -----------------------------------------------------------------
        1. ИНИЦИАЛИЗАЦИЯ ИКОНОК (Lucide)
     ----------------------------------------------------------------- */
@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
        3. АНИМАЦИИ GSAP (Hero Section)
     ----------------------------------------------------------------- */
     if (typeof gsap !== 'undefined' && typeof SplitType !== 'undefined') {
-        
+
         // Разбиваем текст на слова для анимации
         // Проверяем, существует ли элемент, чтобы избежать ошибок на других страницах
         const heroTitle = document.querySelector('.hero__title');
-        
+
         if (heroTitle) {
             const title = new SplitType('.hero__title', { types: 'lines, words' });
-            
+
             const tl = gsap.timeline();
 
             // 1. Бейдж
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Определяем победителя
         const winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-        
+
         resultTitleEl.textContent = resultsContent[winner].title;
         resultDescEl.textContent = resultsContent[winner].desc;
     }
@@ -200,64 +200,113 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#contact').scrollIntoView({ behavior: 'smooth' });
     };
 
-    /* -----------------------------------------------------------------
-       5. КОНТАКТНАЯ ФОРМА & КАПЧА
-    ----------------------------------------------------------------- */
-    const contactForm = document.getElementById('contactForm');
-    const captchaLabel = document.getElementById('captchaLabel');
-    const captchaInput = document.getElementById('captchaInput');
-    const formMessage = document.getElementById('formMessage');
+/* -----------------------------------------------------------------
+   5. КОНТАКТНАЯ ФОРМА & КАПЧА + ВАЛИДАЦИЯ
+----------------------------------------------------------------- */
+const contactForm = document.getElementById('contactForm');
+const captchaLabel = document.getElementById('captchaLabel');
+const captchaInput = document.getElementById('captchaInput');
+const formMessage = document.getElementById('formMessage');
 
-    let num1 = Math.floor(Math.random() * 10);
-    let num2 = Math.floor(Math.random() * 10);
-    let captchaResult = num1 + num2;
+// Поля формы
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const phoneInput = document.getElementById('phone');
+const consentInput = document.getElementById('consent');
 
-    if (captchaLabel) {
-        captchaLabel.textContent = `Сколько будет ${num1} + ${num2}?`;
-    }
+// Генерация капчи
+let num1 = Math.floor(Math.random() * 10);
+let num2 = Math.floor(Math.random() * 10);
+let captchaResult = num1 + num2;
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+if (captchaLabel) {
+    captchaLabel.textContent = `Сколько будет ${num1} + ${num2}?`;
+}
 
-            const userCaptcha = parseInt(captchaInput.value);
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // ❗ Блокируем перезагрузку страницы
 
-            // Проверка капчи
-            if (userCaptcha !== captchaResult) {
-                formMessage.textContent = 'Ошибка: неверный результат примера.';
-                formMessage.className = 'form-message error';
-                return;
-            }
+        // Сбрасываем сообщение
+        formMessage.textContent = '';
+        formMessage.className = 'form-message';
 
-            // Имитация отправки
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Отправка...';
-            submitBtn.disabled = true;
+        // -----------------------------
+        // 🔎 Валидация
+        // -----------------------------
+        if (!nameInput.value.trim()) {
+            formMessage.textContent = 'Пожалуйста, введите ваше имя.';
+            formMessage.classList.add('error');
+            nameInput.focus();
+            return;
+        }
 
+        if (!emailInput.value.trim() || !/^\S+@\S+\.\S+$/.test(emailInput.value.trim())) {
+            formMessage.textContent = 'Введите корректный Email.';
+            formMessage.classList.add('error');
+            emailInput.focus();
+            return;
+        }
+
+        // ✅ Валидация телефона: только цифры, может начинаться с +, минимум 5 цифр
+        const phoneValue = phoneInput.value.trim();
+        const phoneRegex = /^\+?\d{5,15}$/;
+        if (!phoneRegex.test(phoneValue)) {
+            formMessage.textContent = 'Введите корректный номер телефона. Пример: +49123456789';
+            formMessage.classList.add('error');
+            phoneInput.focus();
+            return;
+        }
+
+        if (!consentInput.checked) {
+            formMessage.textContent = 'Необходимо согласие на обработку данных.';
+            formMessage.classList.add('error');
+            consentInput.focus();
+            return;
+        }
+
+        const userCaptcha = parseInt(captchaInput.value);
+        if (userCaptcha !== captchaResult) {
+            formMessage.textContent = 'Ошибка: неверный результат примера.';
+            formMessage.classList.add('error');
+            captchaInput.focus();
+            return;
+        }
+
+        // -----------------------------
+        // ✉️ Имитация отправки
+        // -----------------------------
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
+        submitBtn.textContent = 'Отправка...';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+            // Успех
+            formMessage.textContent = 'Спасибо! Ваше сообщение отправлено.';
+            formMessage.classList.add('success');
+
+            contactForm.reset();
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+
+            // Новая капча
+            num1 = Math.floor(Math.random() * 10);
+            num2 = Math.floor(Math.random() * 10);
+            captchaResult = num1 + num2;
+            captchaLabel.textContent = `Сколько будет ${num1} + ${num2}?`;
+
+            // Скрыть сообщение
             setTimeout(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-                
-                // Успех
-                formMessage.textContent = 'Спасибо! Ваше сообщение отправлено.';
-                formMessage.className = 'form-message success';
-                contactForm.reset();
-                
-                // Новая капча
-                num1 = Math.floor(Math.random() * 10);
-                num2 = Math.floor(Math.random() * 10);
-                captchaResult = num1 + num2;
-                captchaLabel.textContent = `Сколько будет ${num1} + ${num2}?`;
-                
-                setTimeout(() => {
-                    formMessage.textContent = '';
-                    formMessage.className = 'form-message';
-                }, 5000);
+                formMessage.textContent = '';
+                formMessage.className = 'form-message';
+            }, 5000);
 
-            }, 1500);
-        });
-    }
+        }, 1500);
+    });
+}
+
 
     /* -----------------------------------------------------------------
        6. COOKIE POPUP
