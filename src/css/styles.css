@@ -1206,3 +1206,147 @@ img {
         padding: 25px;
     }
 }
+/* --- LEGAL PAGES STYLING --- */
+.pages {
+    padding-top: calc(var(--header-height) + 60px);
+    padding-bottom: 80px;
+    background-color: var(--color-bg);
+    min-height: 100vh;
+}
+
+.pages__container {
+    max-width: 800px;
+    /* Узкий контейнер для удобного чтения */
+    margin: 0 auto;
+}
+
+.pages__header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.pages__header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-main);
+}
+
+.pages__subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-family: monospace;
+    /* Технический стиль для даты */
+}
+
+.pages__content {
+    background: #fff;
+    padding: 60px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--color-border);
+}
+
+.pages__content h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: var(--color-text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pages__content h2:first-of-type {
+    margin-top: 0;
+}
+
+.pages__content p {
+    font-size: 1rem;
+    line-height: 1.8;
+    /* Увеличенный интерлиньяж для чтения */
+    color: #475569;
+    margin-bottom: 20px;
+}
+
+/* Стилизация списков */
+.pages__list {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.pages__list li {
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.pages__list li strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-main);
+    font-size: 1.05rem;
+}
+
+.pages__list-simple {
+    list-style: none;
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+.pages__list-simple li {
+    position: relative;
+    margin-bottom: 10px;
+    color: #475569;
+}
+
+.pages__list-simple li::before {
+    content: "•";
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: absolute;
+    left: -20px;
+    top: -2px;
+}
+
+/* Акцентный блок */
+.pages__note {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1E40AF;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 30px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.pages__link {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.pages__link:hover {
+    border-bottom-color: var(--color-primary);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .pages__content {
+        padding: 30px 20px;
+    }
+
+    .pages__header h1 {
+        font-size: 2rem;
+    }
+}
